@@ -37,40 +37,74 @@ class UserProductItem extends StatelessWidget {
                     .pushNamed(EditProductScreen.routeName, arguments: id);
               },
             ),
-            IconButton(
-              icon: Icon(
-                Icons.delete,
-                color: Theme.of(context).errorColor,
-              ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text('Are you sure?'),
-                    content: Text('Do you want to remove from your products?'),
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text('No'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      FlatButton(
-                        child: Text('Yes'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          Provider.of<Products>(context, listen: false)
-                              .deleteProduct(id);
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+            new DeleteUserProductButton(id: id),
           ],
         ),
       ),
     );
+  }
+}
+
+class DeleteUserProductButton extends StatefulWidget {
+  const DeleteUserProductButton({
+    Key key,
+    @required this.id,
+  }) : super(key: key);
+
+  final String id;
+
+  @override
+  _DeleteUserProductButtonState createState() =>
+      _DeleteUserProductButtonState();
+}
+
+class _DeleteUserProductButtonState extends State<DeleteUserProductButton> {
+  var _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return _isLoading
+        ? CircularProgressIndicator()
+        : IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: Theme.of(context).errorColor,
+            ),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: Text('Are you sure?'),
+                  content: Text('Do you want to remove from your products?'),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text('No'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    FlatButton(
+                      child: Text('Yes'),
+                      onPressed: _isLoading
+                          ? null
+                          : () async {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              await Provider.of<Products>(context,
+                                      listen: false)
+                                  .deleteProduct(widget.id);
+
+                              Navigator.of(context).pop();
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
   }
 }
