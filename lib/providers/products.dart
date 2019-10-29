@@ -4,24 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import './product.dart';
 
 class Products with ChangeNotifier {
+  final String userId;
+
+  Products(this.userId, this._items);
+
   List<Product> _items = [];
 
-  // var _showFavouritesOnly = false;
-
   List<Product> get items {
-    // if (_showFavouritesOnly) {
-    //   return items.where((product) => product.isFavourite).toList();
-    // }
-
     return [..._items];
   }
 
   List<Product> get favouriteItems {
     return _items.where((product) => product.isFavourite).toList();
-  }
-
-  List<Product> get availableItems {
-    return _items.where((product) => product.isAvailable).toList();
   }
 
   Product findProductById(String id) {
@@ -30,28 +24,38 @@ class Products with ChangeNotifier {
 
   Future<void> fetchAndSetProducts() async {
     try {
-      final List<Product> loadedProducts = [];
-      QuerySnapshot snapshot =
+      QuerySnapshot prodSnap =
           await Firestore.instance.collection('products').getDocuments();
-      if (snapshot == null) {
-        return;
-      }
-      snapshot.documents.forEach(
-        (doc) => loadedProducts.add(
+
+      Map<String, dynamic> favData;
+
+      QuerySnapshot favSnap = await Firestore.instance
+          .collection('users')
+          .document('$userId')
+          .collection('favourites')
+          .getDocuments();
+      favSnap.documents.forEach((fav) {
+        favData = fav.data;
+      });
+      final List<Product> loadedProducts = [];
+      prodSnap.documents.forEach((product) {
+        loadedProducts.add(
           Product(
-            id: doc.documentID,
-            title: doc.data['title'],
-            description: doc.data['description'],
-            price: doc.data['price'],
-            image: doc.data['image'],
-            isFavourite: doc.data['isFavourite'],
+            id: product.documentID,
+            title: product['title'],
+            description: product['description'],
+            price: product['price'],
+            isFavourite:
+                favData == null ? false : favData['isFavourite'] ?? false,
+            image: product['image'],
           ),
-        ),
-      );
-      _items = loadedProducts.toList();
+        );
+      });
+
+      _items = loadedProducts;
       notifyListeners();
-    } catch (error) {
-      throw (error);
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -62,7 +66,7 @@ class Products with ChangeNotifier {
         'image': product.image,
         'price': product.price,
         'description': product.description,
-        'isFavourite': false,
+        'isFavourite': product.isFavourite,
       });
       final newProduct = Product(
         id: docRef.documentID,
@@ -72,7 +76,7 @@ class Products with ChangeNotifier {
         description: product.description,
         isFavourite: false,
       );
-      print(newProduct.id);
+      // print(newProduct.id);
       _items.insert(0,
           newProduct); // <- this adds to the beginning of the created list. // _items.add(newProduct); will add to the end of the created list..
       notifyListeners();

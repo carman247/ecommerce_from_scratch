@@ -24,11 +24,19 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
+  final String userId;
+
+  Orders(this.userId, this._orders);
+
   Future<void> fetchAndSetOrders() async {
     try {
       final List<OrderItem> loadedOrders = [];
-      QuerySnapshot snapshot =
-          await Firestore.instance.collection('orders').orderBy('dateTime').getDocuments();
+      QuerySnapshot snapshot = await Firestore.instance
+          .collection('users')
+          .document(userId)
+          .collection('orders')
+          .orderBy('dateTime')
+          .getDocuments();
       if (snapshot == null) {
         return;
       }
@@ -61,7 +69,11 @@ class Orders with ChangeNotifier {
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     final timestamp = DateTime.now();
-    final docRef = await Firestore.instance.collection('orders').add({
+    final docRef = await Firestore.instance
+        .collection('users')
+        .document(userId)
+        .collection('orders')
+        .add({
       'amount': total,
       'dateTime': timestamp.toIso8601String(),
       'products': cartProducts

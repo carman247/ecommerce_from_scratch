@@ -12,7 +12,6 @@ class Product with ChangeNotifier {
   final double salePrice;
   final String image;
   bool isFavourite;
-  bool isAvailable;
 
   Product({
     @required this.id,
@@ -24,25 +23,29 @@ class Product with ChangeNotifier {
     this.salePrice,
     @required this.image,
     this.isFavourite = false,
-    this.isAvailable,
   });
 
-  Future<void> toggleFavouriteStatus() async {
+  void _setFavValue(bool newValue) {
+    isFavourite = newValue;
+    notifyListeners();
+  }
+
+  Future<void> toggleFavouriteStatus(String userId) async {
     final oldStatus = isFavourite;
     isFavourite = !isFavourite;
     notifyListeners();
     try {
-      await Firestore.instance.collection('products').document(id).updateData({
+      await Firestore.instance
+          .collection('users')
+          .document(userId)
+          .collection('favourites')
+          .document(id)
+          .setData({
         'isFavourite': isFavourite,
       });
     } catch (error) {
-      isFavourite = oldStatus;
+      _setFavValue(oldStatus);
       notifyListeners();
     }
-  }
-
-  void toggleAvailableStatus() {
-    isAvailable = !isAvailable;
-    notifyListeners();
   }
 }

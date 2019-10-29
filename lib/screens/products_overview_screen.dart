@@ -10,7 +10,6 @@ import '../providers/products.dart';
 enum FilterOptions {
   All,
   Favourites,
-  // InStock,
 }
 
 class ProductsOverviewScreen extends StatefulWidget {
@@ -21,26 +20,18 @@ class ProductsOverviewScreen extends StatefulWidget {
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showOnlyFavourites = false;
   var _showAll = true;
-  var _isInit = true; // Helper variable to only load code once.
+  var _isInit = true;
   var _isLoading = false;
 
   @override
-  void initState() {
-    // Provider.of<Products>(context).fetchAndSetProducts(); WON'T WORK !!!
-    // Future.delayed(Duration.zero).then((_){
-    //   Provider.of<Products>(context).fetchAndSetProducts(); BAD METHOD !!!
-    // });
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
-    // didChange is perfect for anything that depends on (context).
     if (_isInit) {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Products>(context).fetchAndSetProducts().then((_) {
+      Provider.of<Products>(context, listen: false)
+          .fetchAndSetProducts()
+          .then((_) {
         setState(() {
           _isLoading = false;
         });

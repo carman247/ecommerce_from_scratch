@@ -156,6 +156,8 @@ class _AuthCardState extends State<AuthCard> {
         errorMessage = 'Could not find a user with that email address';
       } else if (error.toString().contains('WRONG_PASSWORD')) {
         errorMessage = 'Incorrect password.';
+      } else if (error.toString().contains('USER_NOT_FOUND')) {
+        errorMessage = 'User/Email address not found.';
       }
       print(error);
       print(errorMessage);

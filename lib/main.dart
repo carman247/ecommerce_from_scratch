@@ -1,3 +1,4 @@
+import 'package:ecommerce_from_scratch/screens/products_overview_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,35 +21,43 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(
-          value: Auth(),
-        ),
-        ChangeNotifierProvider.value(
-          value: Products(),
-        ),
-        ChangeNotifierProvider.value(
-          value: Cart(),
-        ),
-        ChangeNotifierProvider.value(
-          value: Orders(),
-        ),
-      ],
-      child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            accentColor: Colors.orange,
+        providers: [
+          ChangeNotifierProvider.value(
+            value: Auth(),
           ),
-          home: AuthScreen(),
-          routes: {
-            ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-            CartScreen.routeName: (ctx) => CartScreen(),
-            OrdersScreen.routeName: (ctx) => OrdersScreen(),
-            ManageProductsScreen.routeName: (ctx) => ManageProductsScreen(),
-            EditProductScreen.routeName: (ctx) => EditProductScreen(),
-          }),
-    );
+          ChangeNotifierProxyProvider<Auth, Products>(
+            builder: (ctx, auth, previousProductsState) => Products(
+              auth.userId,
+              previousProductsState == null ? [] : previousProductsState.items,
+            ),
+          ),
+          ChangeNotifierProvider.value(
+            value: Cart(),
+          ),
+          ChangeNotifierProxyProvider<Auth, Orders>(
+            builder: (ctx, auth, previousOrdersState) => Orders(
+              auth.userId,
+              previousOrdersState == null ? [] : previousOrdersState.orders,
+            ),
+          ),
+        ],
+        child: Consumer<Auth>(
+          builder: (ctx, auth, _) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Ecommerce Template',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              accentColor: Colors.orange,
+            ),
+            home: auth.isAuth ? ProductsOverviewScreen() : AuthScreen(),
+            routes: {
+              ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+              CartScreen.routeName: (ctx) => CartScreen(),
+              OrdersScreen.routeName: (ctx) => OrdersScreen(),
+              ManageProductsScreen.routeName: (ctx) => ManageProductsScreen(),
+              EditProductScreen.routeName: (ctx) => EditProductScreen(),
+            },
+          ),
+        ));
   }
 }
