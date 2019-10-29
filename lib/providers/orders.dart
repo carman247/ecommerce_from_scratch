@@ -8,13 +8,14 @@ class OrderItem {
   final double amount;
   final List<CartItem> products;
   final DateTime dateTime;
+  final bool isPending;
 
-  OrderItem({
-    @required this.id,
-    @required this.amount,
-    @required this.products,
-    @required this.dateTime,
-  });
+  OrderItem(
+      {@required this.id,
+      @required this.amount,
+      @required this.products,
+      @required this.dateTime,
+      this.isPending});
 }
 
 class Orders with ChangeNotifier {
@@ -44,6 +45,7 @@ class Orders with ChangeNotifier {
         (doc) => loadedOrders.insert(
           0,
           OrderItem(
+              isPending: doc.data['isPending'],
               id: doc.documentID,
               amount: doc.data['amount'],
               dateTime: DateTime.parse(doc.data['dateTime']),
@@ -75,6 +77,7 @@ class Orders with ChangeNotifier {
         .collection('orders')
         .add({
       'amount': total,
+      'status': 'pending...',
       'dateTime': timestamp.toIso8601String(),
       'products': cartProducts
           .map((cartItem) => {

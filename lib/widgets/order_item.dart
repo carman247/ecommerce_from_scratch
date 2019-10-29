@@ -22,6 +22,8 @@ class _OrderItemState extends State<OrderItem> {
       child: Column(
         children: <Widget>[
           ListTile(
+            leading: Icon(Icons.info,
+                color: widget.order.isPending ? Colors.amber : Colors.green),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -29,11 +31,20 @@ class _OrderItemState extends State<OrderItem> {
                   children: <Widget>[
                     Text('Order: '),
                     Text(
-                      '${widget.order.id.substring(0, 10)}',
-                      style: TextStyle(color: Theme.of(context).accentColor),
+                      '${widget.order.id.substring(0, 16)}',
+                      style: TextStyle(color: Theme.of(context).primaryColor),
                     ),
                   ],
                 ),
+                widget.order.isPending
+                    ? Text(
+                        'Status: pending',
+                        style: TextStyle(color: Colors.grey),
+                      )
+                    : Text(
+                        'Status: complete',
+                        style: TextStyle(color: Colors.grey),
+                      ),
                 Text('£${widget.order.amount.toStringAsFixed(2)}'),
               ],
             ),
@@ -65,7 +76,7 @@ class _OrderItemState extends State<OrderItem> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(product.title),
-                              Text('${product.quantity}x £${product.price}')
+                              Text('${product.quantity}x £${product.price.toStringAsFixed(2)}')
                             ],
                           ),
                         ),

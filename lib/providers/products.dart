@@ -22,19 +22,24 @@ class Products with ChangeNotifier {
     return _items.firstWhere((product) => product.id == id);
   }
 
-  Future<void> fetchAndSetProducts() async {
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    final filterString = filterByUser
+        ? Firestore.instance
+            .collection('products')
+            .where('creatorId', isEqualTo: userId)
+            .getDocuments()
+        : Firestore.instance.collection('products').getDocuments();
     try {
-      DocumentSnapshot favSnap = await Firestore.instance
-          .collection('userFavourites')
-          .document(userId)
-          .get();
-
-      QuerySnapshot prodSnap =
-          await Firestore.instance.collection('products').getDocuments();
+      QuerySnapshot prodSnap = await filterString;
 
       if (prodSnap == null) {
         return;
       }
+
+      DocumentSnapshot favSnap = await Firestore.instance
+          .collection('userFavourites')
+          .document(userId)
+          .get();
 
       List<Product> loadedProducts = [];
 
@@ -70,7 +75,7 @@ class Products with ChangeNotifier {
         'image': product.image,
         'price': product.price,
         'description': product.description,
-        'isFavourite': product.isFavourite,
+        'creatorId': userId,
       });
       final newProduct = Product(
         id: docRef.documentID,
@@ -78,11 +83,9 @@ class Products with ChangeNotifier {
         image: product.image,
         price: product.price,
         description: product.description,
-        isFavourite: false,
       );
-      // print(newProduct.id);
-      _items.insert(0,
-          newProduct); // <- this adds to the beginning of the created list. // _items.add(newProduct); will add to the end of the created list..
+
+      _items.insert(0, newProduct);
       notifyListeners();
     } catch (error) {
       print(error);

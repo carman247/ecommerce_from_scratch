@@ -32,10 +32,12 @@ class Auth with ChangeNotifier {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  //create user object based on FirebaseUser
+  Stream<FirebaseUser> get user {
+    return _auth.onAuthStateChanged;
+  }
+
   Future<User> _userFromFirebaseUser(FirebaseUser user) async {
     await user.getIdToken().then((token) {
-      // print('[T O K E N  S T A R T] $token');
       _token = token.token;
       _expiryDate = token.expirationTime;
       _userId = user.uid;
@@ -50,7 +52,6 @@ class Auth with ChangeNotifier {
           email: email, password: password);
       FirebaseUser user = result.user;
 
-      // print(result);
       Firestore.instance
           .collection('userFavourites')
           .document(user.uid)

@@ -167,7 +167,7 @@ class _AuthCardState extends State<AuthCard> {
                   }
                 },
                 onSaved: (value) {
-                  _authData['email'] = value;
+                  _authData['email'] = value.trim();
                 },
               ),
               TextFormField(
@@ -180,7 +180,7 @@ class _AuthCardState extends State<AuthCard> {
                   }
                 },
                 onSaved: (value) {
-                  _authData['password'] = value;
+                  _authData['password'] = value.trim();
                 },
               ),
               if (_authMode == AuthMode.Signup)
