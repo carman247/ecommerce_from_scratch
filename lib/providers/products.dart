@@ -27,7 +27,7 @@ class Products with ChangeNotifier {
       QuerySnapshot prodSnap =
           await Firestore.instance.collection('products').getDocuments();
 
-      Map<String, dynamic> favData;
+      dynamic favData;
 
       QuerySnapshot favSnap = await Firestore.instance
           .collection('users')
@@ -35,7 +35,7 @@ class Products with ChangeNotifier {
           .collection('favourites')
           .getDocuments();
       favSnap.documents.forEach((fav) {
-        favData = fav.data;
+        favData = fav.data.entries;
       });
       final List<Product> loadedProducts = [];
       prodSnap.documents.forEach((product) {
@@ -46,7 +46,7 @@ class Products with ChangeNotifier {
             description: product['description'],
             price: product['price'],
             isFavourite:
-                favData == null ? false : favData['isFavourite'] ?? false,
+                favData == null ? false : favData[product.documentID] ?? false,
             image: product['image'],
           ),
         );
