@@ -29,7 +29,7 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavouriteStatus({String userId, String prodId}) async {
+  Future<void> toggleFavouriteStatus({String userId}) async {
     final oldStatus = isFavourite;
     isFavourite = !isFavourite;
     notifyListeners();
@@ -37,7 +37,7 @@ class Product with ChangeNotifier {
       Firestore.instance
           .collection('userFavourites')
           .document(userId)
-          .updateData({prodId: isFavourite});
+          .updateData({id: isFavourite});
     } catch (e) {
       _setFavValue(oldStatus);
     }

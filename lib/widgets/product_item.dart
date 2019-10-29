@@ -66,7 +66,6 @@ class ToggleFavButton extends StatelessWidget {
         onPressed: () {
           Scaffold.of(context).hideCurrentSnackBar();
           product.toggleFavouriteStatus(
-            prodId: product.id,
             userId: authData.userId,
           );
           product.isFavourite

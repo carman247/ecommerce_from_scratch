@@ -29,12 +29,8 @@ class Products with ChangeNotifier {
           .document(userId)
           .get();
 
-      print(favSnap);
-
       QuerySnapshot prodSnap =
           await Firestore.instance.collection('products').getDocuments();
-
-      print(prodSnap);
 
       if (prodSnap == null) {
         return;
@@ -43,7 +39,7 @@ class Products with ChangeNotifier {
       List<Product> loadedProducts = [];
 
       prodSnap.documents.forEach(
-        (product) {
+        (product) async {
           loadedProducts.add(
             Product(
               id: product.documentID,
@@ -53,7 +49,7 @@ class Products with ChangeNotifier {
               description: product['description'],
               isFavourite: favSnap.data == null
                   ? false
-                  : favSnap.data.containsKey(product.documentID) && false,
+                  : favSnap.data[product.documentID] ?? false,
             ),
           );
         },
