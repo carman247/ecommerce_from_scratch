@@ -24,35 +24,43 @@ class Products with ChangeNotifier {
 
   Future<void> fetchAndSetProducts() async {
     try {
+      DocumentSnapshot favSnap = await Firestore.instance
+          .collection('userFavourites')
+          .document(userId)
+          .get();
+
+      print(favSnap);
+
       QuerySnapshot prodSnap =
           await Firestore.instance.collection('products').getDocuments();
 
-      dynamic favData;
+      print(prodSnap);
 
-      QuerySnapshot favSnap = await Firestore.instance
-          .collection('users')
-          .document('$userId')
-          .collection('favourites')
-          .getDocuments();
-      favSnap.documents.forEach((fav) {
-        favData = fav.data.entries;
-      });
-      final List<Product> loadedProducts = [];
-      prodSnap.documents.forEach((product) {
-        loadedProducts.add(
-          Product(
-            id: product.documentID,
-            title: product['title'],
-            description: product['description'],
-            price: product['price'],
-            isFavourite:
-                favData == null ? false : favData[product.documentID] ?? false,
-            image: product['image'],
-          ),
-        );
-      });
+      if (prodSnap == null) {
+        return;
+      }
+
+      List<Product> loadedProducts = [];
+
+      prodSnap.documents.forEach(
+        (product) {
+          loadedProducts.add(
+            Product(
+              id: product.documentID,
+              title: product['title'],
+              price: product['price'],
+              image: product['image'],
+              description: product['description'],
+              isFavourite: favSnap.data == null
+                  ? false
+                  : favSnap.data.containsKey(product.documentID) && false,
+            ),
+          );
+        },
+      );
 
       _items = loadedProducts;
+
       notifyListeners();
     } catch (e) {
       print(e);

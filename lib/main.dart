@@ -1,4 +1,3 @@
-import 'package:ecommerce_from_scratch/screens/products_overview_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +7,7 @@ import './screens/orders_screen.dart';
 import './screens/product_detail_screen.dart';
 import './screens/auth-screen.dart';
 import './screens/edit_product_screen.dart';
+import './screens/products_overview_screen.dart';
 
 import './providers/auth.dart';
 import './providers/cart.dart';

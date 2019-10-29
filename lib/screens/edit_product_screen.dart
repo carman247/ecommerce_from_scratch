@@ -50,7 +50,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
           'title': _editedProduct.title,
           'description': _editedProduct.description,
           'price': _editedProduct.price.toString(),
-          // 'image': _editedProduct.image,
           'image': ''
         };
         _imageUrlController.text = _editedProduct.image;
@@ -109,14 +108,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ),
           );
         }
-        // finally {
-        //   setState(
-        //     () {
-        //       _isLoading = false;
-        //     },
-        //   );
-        //   Navigator.of(context).pop();
-        // }
       }
       setState(() {
         _isLoading = false;

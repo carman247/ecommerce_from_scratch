@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product with ChangeNotifier {
@@ -17,12 +16,12 @@ class Product with ChangeNotifier {
     @required this.id,
     @required this.title,
     @required this.description,
-    this.category,
-    this.size,
     @required this.price,
-    this.salePrice,
     @required this.image,
     this.isFavourite = false,
+    this.salePrice,
+    this.category,
+    this.size,
   });
 
   void _setFavValue(bool newValue) {
@@ -30,22 +29,17 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavouriteStatus(String userId) async {
+  Future<void> toggleFavouriteStatus({String userId, String prodId}) async {
     final oldStatus = isFavourite;
     isFavourite = !isFavourite;
     notifyListeners();
     try {
-      await Firestore.instance
-          .collection('users')
+      Firestore.instance
+          .collection('userFavourites')
           .document(userId)
-          .collection('favourites')
-          .document(id)
-          .setData({
-        'isFavourite': isFavourite,
-      });
-    } catch (error) {
+          .updateData({prodId: isFavourite});
+    } catch (e) {
       _setFavValue(oldStatus);
-      notifyListeners();
     }
   }
 }

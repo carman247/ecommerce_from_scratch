@@ -58,7 +58,7 @@ class ProductDetailScreen extends StatelessWidget {
                   ),
                   Text('£${product.price.toStringAsFixed(2)}'),
                   Spacer(),
-                  // FavouriteButton(),
+                
                   AddToCartButton(cart: cart, product: product)
                 ]),
           ),

@@ -28,7 +28,10 @@ class _OrderItemState extends State<OrderItem> {
                 Row(
                   children: <Widget>[
                     Text('Order: '),
-                    Text('${widget.order.id.substring(0, 10)}', style: TextStyle(color: Theme.of(context).accentColor),),
+                    Text(
+                      '${widget.order.id.substring(0, 10)}',
+                      style: TextStyle(color: Theme.of(context).accentColor),
+                    ),
                   ],
                 ),
                 Text('£${widget.order.amount.toStringAsFixed(2)}'),
@@ -51,7 +54,6 @@ class _OrderItemState extends State<OrderItem> {
           ),
           if (_expanded)
             Container(
-              // height: min(widget.order.products.length * 20.0 + 100, 180),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
