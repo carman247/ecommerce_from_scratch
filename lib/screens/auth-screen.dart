@@ -202,6 +202,7 @@ class _AuthCardState extends State<AuthCard> {
               (_isLoading)
                   ? CircularProgressIndicator()
                   : RaisedButton(
+                    disabledColor: Colors.grey[300],
                       child: Text(
                           _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                       onPressed: (_passwordController.text.isEmpty ||

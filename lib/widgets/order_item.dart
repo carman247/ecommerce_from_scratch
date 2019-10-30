@@ -27,14 +27,15 @@ class _OrderItemState extends State<OrderItem> {
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text('Order: '),
-                    Text(
-                      '${widget.order.id.substring(0, 16)}',
-                      style: TextStyle(color: Theme.of(context).primaryColor),
-                    ),
-                  ],
+                FittedBox(
+                  child: Row(
+                    children: <Widget>[
+                      Text('Order: '),
+                      Text('${widget.order.id.substring(0, 16)}',
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor)),
+                    ],
+                  ),
                 ),
                 widget.order.isPending
                     ? Text(
@@ -75,8 +76,12 @@ class _OrderItemState extends State<OrderItem> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text(product.title),
-                              Text('${product.quantity}x £${product.price.toStringAsFixed(2)}')
+                              Text(
+                                product.title,
+                                textAlign: TextAlign.left,
+                              ),
+                              Text(
+                                  '${product.quantity}x £${product.price.toStringAsFixed(2)}')
                             ],
                           ),
                         ),
