@@ -30,7 +30,6 @@ class _OrderItemState extends State<OrderItem> {
                 FittedBox(
                   child: Row(
                     children: <Widget>[
-                      Text('Order: '),
                       Text('${widget.order.id.substring(0, 16)}',
                           style:
                               TextStyle(color: Theme.of(context).primaryColor)),
@@ -43,10 +42,10 @@ class _OrderItemState extends State<OrderItem> {
                         style: TextStyle(color: Colors.grey),
                       )
                     : Text(
-                        'Status: complete',
+                        'Status: COMPLETED',
                         style: TextStyle(color: Colors.grey),
                       ),
-                Text('£${widget.order.amount.toStringAsFixed(2)}'),
+                Text('Total: £${widget.order.amount.toStringAsFixed(2)}', style: TextStyle(color: Colors.grey),),
               ],
             ),
             subtitle: Text(
@@ -77,11 +76,10 @@ class _OrderItemState extends State<OrderItem> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                product.title,
-                                textAlign: TextAlign.left,
+                                '${product.title} x${product.quantity}',
+                                textAlign: TextAlign.left, style: TextStyle(color: Colors.grey),
                               ),
-                              Text(
-                                  '${product.quantity}x £${product.price.toStringAsFixed(2)}')
+                              Text(' £${product.price.toStringAsFixed(2)}', style: TextStyle(color: Colors.grey),)
                             ],
                           ),
                         ),

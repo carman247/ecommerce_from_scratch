@@ -23,9 +23,8 @@ class Auth with ChangeNotifier {
         _expiryDate.isAfter(DateTime.now()) &&
         _token != null) {
       return _token;
-    } else {
-      return null;
     }
+    return null;
   }
 
   String get userId {
@@ -48,8 +47,8 @@ class Auth with ChangeNotifier {
 
       _autoLogout();
       notifyListeners();
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      var userData = json.encode(
+      final prefs = await SharedPreferences.getInstance();
+      final userData = json.encode(
         {
           'token': _token,
           'userId': _userId,
@@ -103,7 +102,6 @@ class Auth with ChangeNotifier {
     }
     final extractedUserData =
         json.decode(prefs.getString('userData')) as Map<String, Object>;
-
     final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
 
     if (expiryDate.isBefore(DateTime.now())) {
@@ -117,7 +115,7 @@ class Auth with ChangeNotifier {
     return true;
   }
 
-  void logout() {
+  Future<void> logout() async {
     _token = null;
     _userId = null;
     _expiryDate = null;
@@ -126,6 +124,8 @@ class Auth with ChangeNotifier {
       _authTimer = null;
     }
     notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
   }
 
   void _autoLogout() {

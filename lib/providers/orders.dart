@@ -69,35 +69,42 @@ class Orders with ChangeNotifier {
     }
   }
 
+  void removeOrder(String id) {
+    _orders.remove(id);
+    notifyListeners();
+  }
+
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     final timestamp = DateTime.now();
     final docRef = await Firestore.instance
         .collection('users')
         .document(userId)
         .collection('orders')
-        .add({
-      'amount': total,
-      'status': 'pending...',
-      'dateTime': timestamp.toIso8601String(),
-      'products': cartProducts
-          .map((cartItem) => {
+        .add(
+      {
+        'amount': total,
+        'isPending': true,
+        'dateTime': timestamp.toIso8601String(),
+        'products': cartProducts
+            .map(
+              (cartItem) => {
                 'id': cartItem.id,
                 'title': cartItem.title,
                 'quantity': cartItem.quantity,
                 'price': cartItem.price,
-              })
-          .toList()
-    });
-    // insert 0 (index) adds at the beginning of the list created.
-    _orders.insert(
-      0,
-      OrderItem(
-        id: docRef.documentID,
-        dateTime: timestamp,
-        amount: total,
-        products: cartProducts,
-      ),
+              },
+            )
+            .toList()
+      },
     );
+
+    _orders.insert(
+        0,
+        OrderItem(
+            id: docRef.documentID,
+            dateTime: timestamp,
+            amount: total,
+            products: cartProducts));
     notifyListeners();
   }
 }

@@ -1,12 +1,12 @@
+import 'package:fluttertoast/fluttertoast.dart';
+
+import '../widgets/go_to_cart_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/products.dart';
 import '../providers/cart.dart';
 
-import '../screens/cart.screen.dart';
-
-import '../widgets/badge.dart';
 import '../widgets/add_to_cart_button.dart';
 
 class ProductDetailScreen extends StatelessWidget {
@@ -16,22 +16,13 @@ class ProductDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
     final id = ModalRoute.of(context).settings.arguments as String;
-    final product = Provider.of<Products>(context, listen: false).findProductById(id);
+    final product =
+        Provider.of<Products>(context, listen: false).findProductById(id);
     return Scaffold(
       appBar: AppBar(
         title: Text(product.title),
         actions: <Widget>[
-          Consumer<Cart>(
-            builder: (ctx, cartData, child) => Badge(
-              child: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(CartScreen.routeName);
-                },
-                icon: Icon(Icons.shopping_cart),
-              ),
-              value: cartData.itemCount.toStringAsFixed(0),
-            ),
-          ),
+          GoToCartButton(),
         ],
       ),
       body: ListView(
@@ -58,7 +49,6 @@ class ProductDetailScreen extends StatelessWidget {
                   ),
                   Text('£${product.price.toStringAsFixed(2)}'),
                   Spacer(),
-                
                   AddToCartButton(cart: cart, product: product)
                 ]),
           ),
@@ -75,18 +65,19 @@ class ProductDetailScreen extends StatelessWidget {
       ),
       // Disabled BottomSheet until SnackBar problem is fixed.
 
-      // bottomSheet: Container(
-      //   padding: EdgeInsets.symmetric(horizontal: 4),
-      //   width: double.infinity,
-      //   child: MaterialButton(
-      //     textColor: Theme.of(context).primaryTextTheme.title.color,
-      //     color: Theme.of(context).primaryColor,
-      //     child: Text('ADD TO CART'),
-      //     onPressed: () {
-      //       cart.addItem(product.id, product.price, product.title);
-      //     },
-      //   ),
-      // ),
+      bottomSheet: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4),
+        width: double.infinity,
+        child: MaterialButton(
+          textColor: Theme.of(context).primaryTextTheme.title.color,
+          color: Theme.of(context).primaryColor,
+          child: Text('ADD TO CART'),
+          onPressed: () {
+            cart.addItem(product.id, product.price, product.title);
+            Fluttertoast.showToast(msg: 'Item added to cart');
+          },
+        ),
+      ),
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:ecommerce_from_scratch/providers/products.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,9 +35,13 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.edit),
             title: Text('Manage Products'),
-            onTap: () async {
-              await Provider.of<Products>(context, listen: false)
-                  .fetchAndSetProducts(true);
+            onTap: ()
+                // async
+                {
+              // Not really necessary ?
+
+              // await Provider.of<Products>(context, listen: false)
+              //     .fetchAndSetProducts(true);
               Navigator.of(context)
                   .pushReplacementNamed(ManageProductsScreen.routeName);
             },

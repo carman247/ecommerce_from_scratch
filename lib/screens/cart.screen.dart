@@ -130,14 +130,16 @@ class _OrderButtonState extends State<OrderButton> {
               setState(() {
                 _isLoading = true;
               });
-              // cart.items needs 'values' chosen and then converted to a list.
+
               await Provider.of<Orders>(context, listen: false).addOrder(
                 widget.cart.items.values.toList(),
                 widget.cart.totalAmount,
               );
+
               setState(() {
                 _isLoading = false;
               });
+
               Scaffold.of(context).showSnackBar(SnackBar(
                 content: Text('Order has been placed.'),
                 duration: Duration(seconds: 3),
