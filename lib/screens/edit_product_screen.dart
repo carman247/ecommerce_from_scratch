@@ -142,7 +142,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   reverse: true,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       TextFormField(
                         decoration: InputDecoration(labelText: ('Title')),

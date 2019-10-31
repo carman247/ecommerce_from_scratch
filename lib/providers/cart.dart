@@ -41,9 +41,10 @@ class Cart with ChangeNotifier {
     return total;
   }
 
-  void clearCart() {
+  Future<void> clearCart() {
     _items = {};
     notifyListeners();
+    return null;
   }
 
   void removeItem(String id) {

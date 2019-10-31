@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/cart_item.dart';
-
-import '../screens/orders_screen.dart';
+import 'package:square_in_app_payments/in_app_payments.dart' as pay;
+import 'package:square_in_app_payments/models.dart' as paymodel;
 
 import '../providers/cart.dart' show Cart;
 import '../providers/orders.dart';
+
+import '../widgets/cart_item.dart';
+
+import '../screens/orders_screen.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = '/cart';
@@ -118,6 +121,49 @@ class OrderButton extends StatefulWidget {
 class _OrderButtonState extends State<OrderButton> {
   var _isLoading = false;
 
+  void _pay() {
+    pay.InAppPayments.setSquareApplicationId(
+        'sandbox-sq0idb-QYkCo5BAYwYJgGNVD8AGQA');
+    pay.InAppPayments.startCardEntryFlow(
+      onCardNonceRequestSuccess: _cardNonceRequestSuccess,
+      onCardEntryCancel: _cardEntryCancel,
+    );
+  }
+
+  void _cardEntryCancel() {
+    // Cancel card entry
+  }
+
+  void _cardNonceRequestSuccess(paymodel.CardDetails result) {
+    print(result.nonce);
+
+    pay.InAppPayments.completeCardEntry(
+      onCardEntryComplete: _cardEntryComplete,
+    );
+  }
+
+  void _cardEntryComplete() async {
+    Provider.of<Orders>(context, listen: false).addOrder(
+      widget.cart.items.values.toList(),
+      widget.cart.totalAmount,
+    );
+
+    await widget.cart.clearCart();
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Order has been placed.'),
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'Go to Orders',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+            Navigator.of(context).pushReplacementNamed(OrdersScreen.routeName);
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
@@ -126,34 +172,7 @@ class _OrderButtonState extends State<OrderButton> {
       child: _isLoading ? CircularProgressIndicator() : Text('ORDER NOW'),
       onPressed: (widget.cart.totalAmount <= 0 || _isLoading)
           ? null
-          : () async {
-              setState(() {
-                _isLoading = true;
-              });
-
-              await Provider.of<Orders>(context, listen: false).addOrder(
-                widget.cart.items.values.toList(),
-                widget.cart.totalAmount,
-              );
-
-              setState(() {
-                _isLoading = false;
-              });
-
-              Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text('Order has been placed.'),
-                duration: Duration(seconds: 3),
-                action: SnackBarAction(
-                  label: 'Go to Orders',
-                  onPressed: () {
-                    Scaffold.of(context).hideCurrentSnackBar();
-                    Navigator.of(context)
-                        .pushReplacementNamed(OrdersScreen.routeName);
-                  },
-                ),
-              ));
-              widget.cart.clearCart();
-            },
+          : () async => _pay(),
     );
   }
 }

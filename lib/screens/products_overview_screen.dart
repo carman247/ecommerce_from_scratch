@@ -6,6 +6,7 @@ import '../widgets/app_drawer.dart';
 import '../widgets/go_to_cart_button.dart';
 
 import '../providers/products.dart';
+import '../providers/auth.dart';
 
 enum FilterOptions {
   All,
@@ -29,9 +30,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Products>(context)
-          .fetchAndSetProducts()
-          .then((_) {
+      Provider.of<Products>(context).fetchAndSetProducts().then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -45,7 +44,6 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Shop'),
         actions: <Widget>[
           PopupMenuButton(
             onSelected: (FilterOptions selectedValue) {
@@ -97,7 +95,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           GoToCartButton(),
         ],
       ),
-      drawer: AppDrawer(),
+      drawer: AppDrawer(Provider.of<Auth>(context).userId),
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(),

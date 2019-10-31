@@ -7,8 +7,6 @@ import 'package:provider/provider.dart';
 import '../providers/products.dart';
 import '../providers/cart.dart';
 
-import '../widgets/add_to_cart_button.dart';
-
 class ProductDetailScreen extends StatelessWidget {
   static const routeName = 'product-detail';
 
@@ -38,19 +36,19 @@ class ProductDetailScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    product.title,
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text('£${product.price.toStringAsFixed(2)}'),
-                  Spacer(),
-                  AddToCartButton(cart: cart, product: product)
-                ]),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  product.title,
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text('£${product.price.toStringAsFixed(2)}'),
+                Spacer(),
+              ],
+            ),
           ),
           Container(
             width: double.infinity,

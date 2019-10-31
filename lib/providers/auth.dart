@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +10,8 @@ import 'package:flutter/widgets.dart';
 import '../models/user.dart';
 
 class Auth with ChangeNotifier {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   String _token;
   DateTime _expiryDate;
   String _userId;
@@ -29,12 +32,6 @@ class Auth with ChangeNotifier {
 
   String get userId {
     return _userId;
-  }
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  Stream<FirebaseUser> get user {
-    return _auth.onAuthStateChanged;
   }
 
   Future<User> _userFromFirebaseUser(FirebaseUser user) async {
@@ -63,7 +60,8 @@ class Auth with ChangeNotifier {
     }
   }
 
-  Future<void> signUpWithEmailAndPassword(String email, String password) async {
+  Future<void> signUpWithEmailAndPassword(
+      String email, String password, String displayName) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -73,6 +71,21 @@ class Auth with ChangeNotifier {
           .collection('userFavourites')
           .document(user.uid)
           .setData({});
+
+      Firestore.instance.collection('users').document(user.uid).setData(
+        {
+          'displayName': displayName,
+          'email': user.email,
+        },
+      );
+
+      Firestore.instance.collection('users').document(user.uid).updateData(
+        {
+          'address.street': ' ',
+          'address.city': ' ',
+          'address.postcode': ' ',
+        },
+      );
 
       return _userFromFirebaseUser(user);
     } catch (error) {
@@ -126,6 +139,7 @@ class Auth with ChangeNotifier {
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
     prefs.clear();
+    Fluttertoast.showToast(msg: 'Signed out');
   }
 
   void _autoLogout() {

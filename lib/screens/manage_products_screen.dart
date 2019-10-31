@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +8,8 @@ import '../widgets/app_drawer.dart';
 import '../widgets/user_product_item.dart';
 
 import '../screens/edit_product_screen.dart';
+
+import '../providers/auth.dart';
 
 class ManageProductsScreen extends StatelessWidget {
   static const routeName = ('/manage-products');
@@ -21,7 +24,7 @@ class ManageProductsScreen extends StatelessWidget {
     // final products = Provider.of<Products>(context);
     print('rebuilding...');
     return Scaffold(
-      drawer: AppDrawer(),
+      drawer: AppDrawer(Provider.of<Auth>(context).userId),
       appBar: AppBar(
         title: Text('Manage Products'),
         actions: <Widget>[

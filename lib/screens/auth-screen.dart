@@ -54,11 +54,13 @@ class _AuthCardState extends State<AuthCard> {
   Map<String, String> _authData = {
     'email': '',
     'password': '',
+    'Username': '',
   };
   var _isLoading = false;
   var _authenticated = false;
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
+  final _displayNameController = TextEditingController();
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -98,7 +100,7 @@ class _AuthCardState extends State<AuthCard> {
         // Sign user up
         await Provider.of<Auth>(context, listen: false)
             .signUpWithEmailAndPassword(
-                _authData['email'], _authData['password']);
+                _authData['email'], _authData['password'], _authData['Username']);
 
         Fluttertoast.showToast(msg: 'Account created');
 
@@ -157,14 +159,30 @@ class _AuthCardState extends State<AuthCard> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+              if (_authMode == AuthMode.Signup)
+              TextFormField(
+                controller: _displayNameController,
+                decoration: InputDecoration(labelText: 'Username'),
+                keyboardType: TextInputType.text,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter your username';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _authData['Username'] = value.trim();
+                },
+              ),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'E-Mail'),
+                decoration: InputDecoration(labelText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value.isEmpty || !value.contains('@')) {
                     return 'Invalid email!';
                   }
+                  return null;
                 },
                 onSaved: (value) {
                   _authData['email'] = value.trim();
@@ -178,6 +196,7 @@ class _AuthCardState extends State<AuthCard> {
                   if (value.isEmpty || value.length < 5) {
                     return 'Password is too short!';
                   }
+                  return null;
                 },
                 onSaved: (value) {
                   _authData['password'] = value.trim();
@@ -193,6 +212,7 @@ class _AuthCardState extends State<AuthCard> {
                           if (value != _passwordController.text) {
                             return 'Passwords do not match!';
                           }
+                          return null;
                         }
                       : null,
                 ),
@@ -202,7 +222,7 @@ class _AuthCardState extends State<AuthCard> {
               (_isLoading)
                   ? CircularProgressIndicator()
                   : RaisedButton(
-                    disabledColor: Colors.grey[300],
+                      disabledColor: Colors.grey[300],
                       child: Text(
                           _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                       onPressed: (_passwordController.text.isEmpty ||

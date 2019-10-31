@@ -22,7 +22,8 @@ class _OrderItemState extends State<OrderItem> {
       child: Column(
         children: <Widget>[
           ListTile(
-            leading: Icon(Icons.info,
+            leading: 
+            Icon(Icons.info,
                 color: widget.order.isPending ? Colors.amber : Colors.green),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,7 +31,7 @@ class _OrderItemState extends State<OrderItem> {
                 FittedBox(
                   child: Row(
                     children: <Widget>[
-                      Text('${widget.order.id.substring(0, 16)}',
+                      Text('${widget.order.id}',
                           style:
                               TextStyle(color: Theme.of(context).primaryColor)),
                     ],

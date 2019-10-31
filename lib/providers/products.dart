@@ -93,7 +93,10 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> updateProduct(String id, Product updatedProduct) async {
+  Future<void> updateProduct(
+    String id,
+    Product updatedProduct,
+  ) async {
     try {
       final index = _items.indexWhere((product) => product.id == id);
       if (index >= 0) {
