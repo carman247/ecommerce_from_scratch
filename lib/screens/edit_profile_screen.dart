@@ -22,25 +22,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     'displayName': '',
   };
 
-  final _emailController = TextEditingController();
-  final _streetController = TextEditingController();
-  final _cityController = TextEditingController();
-  final _postcodeController = TextEditingController();
-  final _displayNameController = TextEditingController();
+  // final _emailController = TextEditingController();
+  // final _streetController = TextEditingController();
+  // final _cityController = TextEditingController();
+  // final _postcodeController = TextEditingController();
+  // final _displayNameController = TextEditingController();
 
   void _showErrorDialog(String message) {
     showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: Text('An Error Occured!'),
-              content: Text(message),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('Okay'),
-                  onPressed: () => Navigator.of(ctx).pop(),
-                )
-              ],
-            ));
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('An Error Occured!'),
+        content: Text(message),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Okay'),
+            onPressed: () => Navigator.of(ctx).pop(),
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -111,6 +112,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       Navigator.pop(context);
                                     } catch (e) {
                                       print(e);
+                                      _showErrorDialog(e);
                                     }
                                   },
                                   child: Text('Save'),

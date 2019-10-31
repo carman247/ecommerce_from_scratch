@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product with ChangeNotifier {
   final String id;
+  final String brand;
   final String title;
   final String description;
   final String category;
@@ -16,6 +17,7 @@ class Product with ChangeNotifier {
   Product({
     @required this.id,
     @required this.title,
+    @required this.brand,
     @required this.description,
     @required this.price,
     @required this.image,
@@ -39,6 +41,20 @@ class Product with ChangeNotifier {
           .collection('userFavourites')
           .document(userId)
           .updateData({id: isFavourite});
+    } catch (e) {
+      _setFavValue(oldStatus);
+    }
+  }
+
+  Future<void> toggleFavouriteStatus2({String userId, String prodId}) async {
+    final oldStatus = isFavourite;
+    isFavourite = !isFavourite;
+    notifyListeners();
+    try {
+      Firestore.instance
+          .collection('userFavourites')
+          .document(userId)
+          .updateData({prodId: isFavourite});
     } catch (e) {
       _setFavValue(oldStatus);
     }

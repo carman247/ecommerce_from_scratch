@@ -31,6 +31,9 @@ class AppDrawer extends StatelessWidget {
             title: Text('Shop Name'),
           ),
           UserAccountsDrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColorDark,
+            ),
             accountName: StreamBuilder(
               stream: Firestore.instance
                   .collection('users')
@@ -51,15 +54,15 @@ class AppDrawer extends StatelessWidget {
                 return _buildEmail(context, snapshot.data);
               },
             ),
-            currentAccountPicture: GestureDetector(
-              child: CircleAvatar(
-                backgroundColor: Colors.grey,
-                child: Icon(
-                  Icons.person,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            // currentAccountPicture: GestureDetector(
+            //   child: CircleAvatar(
+            //     backgroundColor: Colors.grey,
+            //     child: Icon(
+            //       Icons.person,
+            //       color: Colors.white,
+            //     ),
+            //   ),
+            // ),
           ),
           Divider(),
           ListTile(

@@ -51,6 +51,7 @@ class Products with ChangeNotifier {
               title: product['title'],
               price: product['price'],
               image: product['image'],
+              brand: product['brand'],
               description: product['description'],
               isFavourite: favSnap.data == null
                   ? false
@@ -74,6 +75,7 @@ class Products with ChangeNotifier {
         'title': product.title,
         'image': product.image,
         'price': product.price,
+        'brand': product.brand,
         'description': product.description,
         'creatorId': userId,
       });
@@ -82,6 +84,7 @@ class Products with ChangeNotifier {
         title: product.title,
         image: product.image,
         price: product.price,
+        brand: product.brand,
         description: product.description,
       );
 
@@ -108,6 +111,7 @@ class Products with ChangeNotifier {
           'description': updatedProduct.description,
           'image': updatedProduct.image,
           'price': updatedProduct.price,
+          'brand': updatedProduct.brand,
         });
         _items[index] = updatedProduct;
         notifyListeners();

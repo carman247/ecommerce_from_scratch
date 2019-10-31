@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './screens/splash_screen.dart';
-import './screens/cart.screen.dart';
+import './screens/cart_screen.dart';
 import './screens/manage_products_screen.dart';
 import './screens/orders_screen.dart';
 import './screens/product_detail_screen.dart';
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
           title: 'Ecommerce Template',
           theme: ThemeData(
             primarySwatch: Colors.blueGrey,
-            accentColor: Colors.orange,
+            accentColor: Colors.redAccent,
           ),
           home: auth.isAuth
               ? ProductsOverviewScreen()

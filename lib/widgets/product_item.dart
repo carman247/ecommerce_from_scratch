@@ -12,36 +12,39 @@ import '../widgets/add_to_cart_button.dart';
 class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context, listen: false);
+    // final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
     final authData = Provider.of<Auth>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Card(
         elevation: 2,
-        child: GestureDetector(
-          onTap: () {
-            Scaffold.of(context).hideCurrentSnackBar();
-            Navigator.of(context).pushNamed(
-              ProductDetailScreen.routeName,
-              arguments: product.id,
-            );
-          },
-          child: GridTile(
-            child: Image.network(
-              product.image,
-              fit: BoxFit.cover,
-            ),
-            footer: GridTileBar(
-              leading: ToggleFavButton(authData: authData),
-              title: Text(
-                product.title,
-                style: TextStyle(fontWeight: FontWeight.bold),
+        child: Consumer<Product>(
+          builder: (ctx, product, child) => (GestureDetector(
+            onTap: () {
+              Scaffold.of(context).hideCurrentSnackBar();
+              Navigator.of(context).pushNamed(
+                ProductDetailScreen.routeName,
+                arguments: {
+                  'id': product.id,
+                  'isFavourite': product.isFavourite,
+                },
+              );
+            },
+            child: GridTile(
+              child: Image.network(
+                product.image,
+                fit: BoxFit.cover,
               ),
-              backgroundColor: Colors.black45,
-              trailing: AddToCartButton(cart: cart, product: product),
+              footer: GridTileBar(
+                leading: Text(product.title,
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                title: ToggleFavButton(authData: authData),
+                backgroundColor: Colors.black45,
+                // trailing: AddToCartButton(cart: cart, product: product),
+              ),
             ),
-          ),
+          )),
         ),
       ),
     );
@@ -71,13 +74,13 @@ class ToggleFavButton extends StatelessWidget {
           product.isFavourite
               ? Scaffold.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Added item to favourites.'),
+                    content: Text('Added to favourites'),
                     duration: Duration(seconds: 3),
                   ),
                 )
               : Scaffold.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Removed item from favourites.'),
+                    content: Text('Removed from favourites'),
                     duration: Duration(seconds: 3),
                   ),
                 );

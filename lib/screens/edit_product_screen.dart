@@ -29,6 +29,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     price: 0,
     description: '',
     image: '',
+    brand: '',
   );
 
   var _isLoading = false;
@@ -50,7 +51,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
           'title': _editedProduct.title,
           'description': _editedProduct.description,
           'price': _editedProduct.price.toString(),
-          'image': ''
+          'image': _editedProduct.image,
+          'brand': _editedProduct.brand,
         };
         _imageUrlController.text = _editedProduct.image;
       }
@@ -156,6 +158,32 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         onSaved: (value) {
                           _editedProduct = Product(
                               title: value,
+                              brand: _editedProduct.brand,
+                              price: _editedProduct.price,
+                              description: _editedProduct.description,
+                              image: _editedProduct.image,
+                              id: _editedProduct.id,
+                              isFavourite: _editedProduct.isFavourite);
+                        },
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_priceFocusNode);
+                        },
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: ('Brand')),
+                        initialValue: _initValues['brand'],
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter a brand.';
+                          } else {
+                            return null;
+                          }
+                        },
+                        onSaved: (value) {
+                          _editedProduct = Product(
+                              title: _editedProduct.title,
+                              brand: value,
                               price: _editedProduct.price,
                               description: _editedProduct.description,
                               image: _editedProduct.image,
@@ -185,6 +213,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         onSaved: (value) {
                           _editedProduct = Product(
                               title: _editedProduct.title,
+                              brand: _editedProduct.brand,
                               price: double.parse(value),
                               description: _editedProduct.description,
                               image: _editedProduct.image,
@@ -214,6 +243,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         onSaved: (value) {
                           _editedProduct = Product(
                               title: _editedProduct.title,
+                              brand: _editedProduct.brand,
                               price: _editedProduct.price,
                               description: value,
                               image: _editedProduct.image,
@@ -224,65 +254,63 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         keyboardType: TextInputType.multiline,
                         maxLines: 3,
                       ),
-                      SizedBox(
-                        height: 10,
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Image URL'),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter an image URL.';
+                          }
+                          if (!value.startsWith('http') &&
+                              !value.startsWith('https')) {
+                            return 'Please enter a valid URL.';
+                          }
+                          if (!value.endsWith('.png') &&
+                              !value.endsWith('.jpg') &&
+                              !value.endsWith('.jpeg')) {
+                            return 'Please provide a valid image (.jpg, .jpeg, .png)';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _editedProduct = Product(
+                              title: _editedProduct.title,
+                              brand: _editedProduct.brand,
+                              price: _editedProduct.price,
+                              description: _editedProduct.description,
+                              image: value,
+                              id: _editedProduct.id,
+                              isFavourite: _editedProduct.isFavourite);
+                        },
+                        keyboardType: TextInputType.url,
+                        textInputAction: TextInputAction.done,
+                        controller: _imageUrlController,
+                        focusNode: _imageUrlFocusNode,
+                        onFieldSubmitted: (_) => _saveForm,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: TextFormField(
-                          decoration: InputDecoration(labelText: 'Image URL'),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter an image URL.';
-                            }
-                            if (!value.startsWith('http') &&
-                                !value.startsWith('https')) {
-                              return 'Please enter a valid URL.';
-                            }
-                            if (!value.endsWith('.png') &&
-                                !value.endsWith('.jpg') &&
-                                !value.endsWith('.jpeg')) {
-                              return 'Please provide a valid image (.jpg, .jpeg, .png)';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _editedProduct = Product(
-                                title: _editedProduct.title,
-                                price: _editedProduct.price,
-                                description: _editedProduct.description,
-                                image: value,
-                                id: _editedProduct.id,
-                                isFavourite: _editedProduct.isFavourite);
-                          },
-                          keyboardType: TextInputType.url,
-                          textInputAction: TextInputAction.done,
-                          controller: _imageUrlController,
-                          focusNode: _imageUrlFocusNode,
-                          onFieldSubmitted: (_) => _saveForm,
-                        ),
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: _imageUrlController.text.isEmpty
+                            ? Container(
+                                alignment: Alignment.center,
+                                child: Icon(
+                                  Icons.photo,
+                                  color: Colors.black45,
+                                ),
+                                color: Colors.black12,
+                                width: double.infinity,
+                                height: MediaQuery.of(context).size.height / 3,
+                              )
+                            : Container(
+                                alignment: Alignment.center,
+                                child: Image.network(
+                                  _imageUrlController.text,
+                                  fit: BoxFit.fill,
+                                ),
+                                color: Colors.black12,
+                                width: double.infinity,
+                                height: MediaQuery.of(context).size.height / 3,
+                              ),
                       ),
-                      _imageUrlController.text.isEmpty
-                          ? Container(
-                              alignment: Alignment.center,
-                              child: Icon(
-                                Icons.photo,
-                                color: Colors.black45,
-                              ),
-                              color: Colors.black12,
-                              width: double.infinity,
-                              height: MediaQuery.of(context).size.height / 3,
-                            )
-                          : Container(
-                              alignment: Alignment.center,
-                              child: Image.network(
-                                _imageUrlController.text,
-                                fit: BoxFit.cover,
-                              ),
-                              color: Colors.black12,
-                              width: double.infinity,
-                              height: MediaQuery.of(context).size.height / 3,
-                            ),
                     ],
                   ),
                 ),
