@@ -3,17 +3,15 @@ import 'package:provider/provider.dart';
 
 import '../screens/product_detail_screen.dart';
 
-import '../providers/cart.dart';
+// import '../providers/cart.dart';
 import '../providers/product.dart';
 import '../providers/auth.dart';
-
-import '../widgets/add_to_cart_button.dart';
 
 class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final product = Provider.of<Product>(context, listen: false);
-    final cart = Provider.of<Cart>(context, listen: false);
+    // final cart = Provider.of<Cart>(context, listen: false);
     final authData = Provider.of<Auth>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
@@ -37,9 +35,15 @@ class ProductItem extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
               footer: GridTileBar(
-                leading: Text(product.title,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                title: ToggleFavButton(authData: authData),
+                leading: Text(
+                  product.title,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                title: SizedBox(
+                  width: 100,
+                ),
+                trailing: ToggleFavButton(authData: authData),
                 backgroundColor: Colors.black45,
                 // trailing: AddToCartButton(cart: cart, product: product),
               ),

@@ -4,21 +4,21 @@ class User with ChangeNotifier {
   final String uid;
   String userName;
   String userEmail;
-  Map<dynamic, dynamic> userAddress;
+  // Map<dynamic, dynamic> userAddress;
   String userPhoneNumber;
 
   User({
     this.uid,
     this.userName,
     this.userEmail,
-    this.userAddress,
+    // this.userAddress,
     this.userPhoneNumber,
   });
 
   String get getUid => uid;
   String get getDisplayName => userName;
   String get getEmail => userEmail;
-  Map<dynamic, dynamic> get getAddress => userAddress;
+  // Map<dynamic, dynamic> get getAddress => userAddress;
   String get getContantNumber => userPhoneNumber;
 
   set setDisplayName(String username) {
@@ -32,7 +32,7 @@ class User with ChangeNotifier {
   }
 
   set setUserAddress(Map<dynamic, dynamic> address) {
-    userAddress = address;
+    // userAddress = address;
     notifyListeners();
   }
 
@@ -45,7 +45,7 @@ class User with ChangeNotifier {
     var data = {
       'userName': userName,
       'userEmail': userEmail,
-      'userAddress': userAddress,
+      // 'userAddress': userAddress,
       'userPhoneNumber': userPhoneNumber,
     };
     return data;

@@ -14,7 +14,7 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   // final GlobalKey<FormState> _formKey = GlobalKey();
 
-  Map<String, String> _profileData = {
+  Map<String, dynamic> _profileData = {
     'email': '',
     'street': '',
     'city': '',

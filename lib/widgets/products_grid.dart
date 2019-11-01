@@ -19,6 +19,7 @@ class ProductsGrid extends StatelessWidget {
         showOnlyFavourites ? productsData.favouriteItems : productsData.items;
 
     return GridView.builder(
+      scrollDirection: Axis.horizontal,
       padding: EdgeInsets.all(10),
       itemCount: products.length,
       itemBuilder: (ctx, index) => ChangeNotifierProvider.value(
@@ -26,8 +27,8 @@ class ProductsGrid extends StatelessWidget {
         child: ProductItem(),
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 3 / 2,
+        crossAxisCount: 1,
+        childAspectRatio: 2 / 3,
         crossAxisSpacing: 5,
         mainAxisSpacing: 5,
       ),

@@ -69,15 +69,14 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.store),
             title: Text('Shop'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/');
+              Navigator.of(context).pushNamed('/');
             },
           ),
           ListTile(
             leading: Icon(Icons.payment),
             title: Text('Orders'),
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(OrdersScreen.routeName);
+              Navigator.of(context).pushNamed(OrdersScreen.routeName);
             },
           ),
           ListTile(
@@ -86,8 +85,7 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               // await Provider.of<Products>(context, listen: false)
               //     .fetchAndSetProducts(true);
-              Navigator.of(context)
-                  .pushReplacementNamed(ManageProductsScreen.routeName);
+              Navigator.of(context).pushNamed(ManageProductsScreen.routeName);
             },
           ),
           ListTile(
@@ -102,6 +100,7 @@ class AppDrawer extends StatelessWidget {
             title: Text('Logout'),
             onTap: () {
               Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed('/');
               Provider.of<Auth>(context, listen: false).logout();
             },
           ),

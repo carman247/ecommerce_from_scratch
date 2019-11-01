@@ -54,11 +54,20 @@ class MyApp extends StatelessWidget {
               ? ProductsOverviewScreen()
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
-                          ? SplashScreen()
-                          : AuthScreen(),
+                  builder:
+                      (BuildContext ctx, AsyncSnapshot authResultSnapshot) {
+                    switch (authResultSnapshot.connectionState) {
+                      case ConnectionState.none:
+                        return SplashScreen();
+                      case ConnectionState.waiting:
+                        return SplashScreen();
+                      case ConnectionState.active:
+                        return SplashScreen();
+                      case ConnectionState.done:
+                        return AuthScreen();
+                    }
+                    return null;
+                  },
                 ),
           routes: {
             ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),

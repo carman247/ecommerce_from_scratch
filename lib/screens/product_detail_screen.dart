@@ -73,15 +73,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Column(
                         children: <Widget>[
-                          Text(
-                            product.title,
-                            style: TextStyle(fontSize: 32),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                product.title,
+                                style: TextStyle(fontSize: 32),
+                              ),
+                            ),
                           ),
                           Text(
                             product.brand,
