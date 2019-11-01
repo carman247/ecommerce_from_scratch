@@ -74,7 +74,8 @@ class Orders with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addOrder(List<CartItem> cartProducts, double total) async {
+  Future<void> addOrder(List<CartItem> cartProducts, double total,
+      Map<dynamic, dynamic> address) async {
     final timestamp = DateTime.now();
     final docRef = await Firestore.instance
         .collection('users')
@@ -94,17 +95,20 @@ class Orders with ChangeNotifier {
                 'price': cartItem.price,
               },
             )
-            .toList()
+            .toList(),
+        'address': address,
       },
     );
 
     _orders.insert(
-        0,
-        OrderItem(
-            id: docRef.documentID,
-            dateTime: timestamp,
-            amount: total,
-            products: cartProducts));
+      0,
+      OrderItem(
+        id: docRef.documentID,
+        dateTime: timestamp,
+        amount: total,
+        products: cartProducts,
+      ),
+    );
     notifyListeners();
   }
 }

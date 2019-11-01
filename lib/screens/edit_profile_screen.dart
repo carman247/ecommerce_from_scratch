@@ -12,7 +12,10 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  // final GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  final _streetController = TextEditingController();
+  final _cityController = TextEditingController();
+  final _postcodeController = TextEditingController();
 
   Map<String, dynamic> _profileData = {
     'email': '',
@@ -147,65 +150,96 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         onPressed: () {
                           showDialog(
                             context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: Text('Address'),
-                              content: Container(
-                                height: MediaQuery.of(context).size.height / 3,
-                                child: Column(children: [
-                                  TextFormField(
-                                    decoration: InputDecoration(
-                                        hintText: 'Street address'),
-                                    autovalidate: true,
-                                    onChanged: (value) {
-                                      _profileData['street'] = value.trim();
-                                    },
+                            builder: (ctx) => Form(
+                              key: _formKey,
+                              child: AlertDialog(
+                                title: Text('Address'),
+                                content: Container(
+                                  height:
+                                      MediaQuery.of(context).size.height / 3,
+                                  child: Column(children: [
+                                    TextFormField(
+                                      controller: _streetController,
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'Street address can\'t be blank';
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                          hintText: 'Street address'),
+                                      autovalidate: true,
+                                      onChanged: (value) {
+                                        _profileData['street'] = value.trim();
+                                      },
+                                    ),
+                                    TextFormField(
+                                      controller: _cityController,
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'City can\'t be blank';
+                                        }
+                                        return null;
+                                      },
+                                      decoration:
+                                          InputDecoration(hintText: 'City'),
+                                      autovalidate: true,
+                                      onChanged: (value) {
+                                        _profileData['city'] = value.trim();
+                                      },
+                                    ),
+                                    TextFormField(
+                                      controller: _postcodeController,
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'Postcode can\'t be blank';
+                                        }
+                                        return null;
+                                      },
+                                      decoration:
+                                          InputDecoration(hintText: 'Postcode'),
+                                      autovalidate: true,
+                                      onChanged: (value) {
+                                        _profileData['postcode'] = value.trim();
+                                      },
+                                    ),
+                                  ]),
+                                ),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text('Cancel'),
                                   ),
-                                  TextFormField(
-                                    decoration:
-                                        InputDecoration(hintText: 'City'),
-                                    autovalidate: true,
-                                    onChanged: (value) {
-                                      _profileData['city'] = value.trim();
+                                  FlatButton(
+                                    onPressed: () async {
+                                      if (!_formKey.currentState.validate()) {
+                                        return;
+                                      }
+
+                                      try {
+                                        await Firestore.instance
+                                            .collection('users')
+                                            .document(auth.userId)
+                                            .updateData(
+                                          {
+                                            'addressSet': true,
+                                            'address.street':
+                                                _profileData['street'],
+                                            'address.city':
+                                                _profileData['city'],
+                                            'address.postcode':
+                                                _profileData['postcode'],
+                                          },
+                                        );
+                                        Navigator.pop(context);
+                                      } catch (e) {
+                                        print(e);
+                                      }
                                     },
+                                    child: Text('Save'),
                                   ),
-                                  TextFormField(
-                                    decoration:
-                                        InputDecoration(hintText: 'Postcode'),
-                                    autovalidate: true,
-                                    onChanged: (value) {
-                                      _profileData['postcode'] = value.trim();
-                                    },
-                                  ),
-                                ]),
+                                ],
                               ),
-                              actions: <Widget>[
-                                FlatButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text('Cancel'),
-                                ),
-                                FlatButton(
-                                  onPressed: () async {
-                                    try {
-                                      await Firestore.instance
-                                          .collection('users')
-                                          .document(auth.userId)
-                                          .updateData(
-                                        {
-                                          'address.street':
-                                              _profileData['street'],
-                                          'address.city': _profileData['city'],
-                                          'address.postcode':
-                                              _profileData['postcode'],
-                                        },
-                                      );
-                                      Navigator.pop(context);
-                                    } catch (e) {
-                                      print(e);
-                                    }
-                                  },
-                                  child: Text('Save'),
-                                ),
-                              ],
                             ),
                           );
                         },

@@ -59,6 +59,7 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   var _authenticated = false;
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   final _emailController = TextEditingController();
   final _displayNameController = TextEditingController();
 
@@ -99,8 +100,8 @@ class _AuthCardState extends State<AuthCard> {
       } else {
         // Sign user up
         await Provider.of<Auth>(context, listen: false)
-            .signUpWithEmailAndPassword(
-                _authData['email'], _authData['password'], _authData['Username']);
+            .signUpWithEmailAndPassword(_authData['email'],
+                _authData['password'], _authData['Username']);
 
         Fluttertoast.showToast(msg: 'Account created');
 
@@ -160,20 +161,20 @@ class _AuthCardState extends State<AuthCard> {
           child: Column(
             children: <Widget>[
               if (_authMode == AuthMode.Signup)
-              TextFormField(
-                controller: _displayNameController,
-                decoration: InputDecoration(labelText: 'Username'),
-                keyboardType: TextInputType.text,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter your username';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _authData['Username'] = value.trim();
-                },
-              ),
+                TextFormField(
+                  controller: _displayNameController,
+                  decoration: InputDecoration(labelText: 'Username'),
+                  keyboardType: TextInputType.text,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter your username';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _authData['Username'] = value.trim();
+                  },
+                ),
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(labelText: 'Email'),
@@ -204,6 +205,7 @@ class _AuthCardState extends State<AuthCard> {
               ),
               if (_authMode == AuthMode.Signup)
                 TextFormField(
+                  controller: _confirmPasswordController,
                   enabled: _authMode == AuthMode.Signup,
                   decoration: InputDecoration(labelText: 'Confirm Password'),
                   obscureText: true,
@@ -227,7 +229,8 @@ class _AuthCardState extends State<AuthCard> {
                           _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                       onPressed: (_passwordController.text.isEmpty ||
                               _emailController.text.isEmpty ||
-                              _authenticated)
+                              _authenticated ||
+                              _confirmPasswordController.text.isEmpty)
                           ? null
                           : _submit,
                       shape: RoundedRectangleBorder(

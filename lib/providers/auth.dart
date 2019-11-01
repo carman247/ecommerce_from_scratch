@@ -76,6 +76,7 @@ class Auth with ChangeNotifier {
         {
           'displayName': displayName,
           'email': user.email,
+          'addressSet': false,
         },
       );
 
