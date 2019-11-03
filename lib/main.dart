@@ -32,8 +32,8 @@ class MyApp extends StatelessWidget {
             previousProductsState == null ? [] : previousProductsState.items,
           ),
         ),
-        ChangeNotifierProvider.value(
-          value: Cart(),
+        ChangeNotifierProxyProvider<Auth, Cart>(
+          builder: (ctx, auth, previousCartState) => Cart(),
         ),
         ChangeNotifierProxyProvider<Auth, Orders>(
           builder: (ctx, auth, previousOrdersState) => Orders(
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Ecommerce Template',
           theme: ThemeData(
-            primarySwatch: Colors.blueGrey,
+            primarySwatch: Colors.blue,
             accentColor: Colors.redAccent,
           ),
           home: auth.isAuth

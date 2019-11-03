@@ -7,6 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 
+import '../providers/cart.dart';
+
 import '../models/user.dart';
 
 class Auth with ChangeNotifier {
@@ -130,6 +132,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> logout() async {
+    Cart().clearCart();
     _token = null;
     _userId = null;
     _expiryDate = null;
@@ -144,6 +147,7 @@ class Auth with ChangeNotifier {
   }
 
   void _autoLogout() {
+    Cart().clearCart();
     if (_authTimer != null) {
       _authTimer.cancel();
     }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,14 +8,12 @@ class CartItem {
   final String title;
   final int quantity;
   final double price;
-  final bool isPending;
 
   CartItem({
     @required this.id,
     @required this.title,
     @required this.quantity,
     @required this.price,
-    this.isPending,
   });
 }
 
@@ -27,6 +26,7 @@ class Cart with ChangeNotifier {
 
   int get itemCount {
     int total = 0;
+
     _items.forEach((key, cartItem) {
       total += cartItem.quantity;
     });
@@ -39,6 +39,29 @@ class Cart with ChangeNotifier {
       total += cartItem.price * cartItem.quantity;
     });
     return total;
+  }
+
+  getCartTotal(String userId) async {
+    var cartTotal = 0;
+    try {
+      QuerySnapshot snapshot = await Firestore.instance
+          .collection('users')
+          .document(userId)
+          .collection('cart')
+          .getDocuments();
+      if (snapshot == null) {
+        return;
+      }
+      snapshot.documents.forEach((doc) {
+        if (doc == null) {
+          return;
+        }
+        cartTotal = cartTotal + doc.data['quantity'];
+      });
+    } catch (error) {
+      print(error);
+    }
+    print(cartTotal);
   }
 
   Future<void> clearCart() {
@@ -74,7 +97,6 @@ class Cart with ChangeNotifier {
 
   void removeSingleItem(String id) {
     // This will eventually remove all items from the cart once their total reaches 0.
-
     if (!_items.containsKey(id)) {
       return;
     }
@@ -90,12 +112,11 @@ class Cart with ChangeNotifier {
       );
     } else {
       _items.remove(id);
-      Fluttertoast.showToast(
-        msg: 'Item removed from cart'
-      );
+      Fluttertoast.showToast(msg: 'Item removed from cart');
     }
+    notifyListeners();
     // This will stop removing items from the cart once they reach zero. Currently means people can order 0 x items...
-
+    ////////////////////////////////////////////////////////////////////
     // _items.update(
     //   id,
     //   (existingCartItem) => existingCartItem.quantity >= 1
@@ -112,10 +133,10 @@ class Cart with ChangeNotifier {
     //           quantity: existingCartItem.quantity,
     //         ),
     // );
-    notifyListeners();
+    ////////////////////////////////////////////////////////////////////
   }
 
-  void addSingleItem(String id) {
+  void addSingleItem(String id) async {
     _items.update(
       id,
       (existingCartItem) => CartItem(

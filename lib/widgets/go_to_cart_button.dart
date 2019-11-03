@@ -12,6 +12,9 @@ class GoToCartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Consumer<Cart>(
       builder: (ctx, cartData, child) => Badge(
         // child is what the Badge should be placed on. In this case an IconButton.

@@ -12,10 +12,14 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<FormState> _addressFormKey = GlobalKey();
+  final GlobalKey<FormState> _usernameFormKey = GlobalKey();
+  final GlobalKey<FormState> _emailFormKey = GlobalKey();
   final _streetController = TextEditingController();
   final _cityController = TextEditingController();
   final _postcodeController = TextEditingController();
+  final _displayNameController = TextEditingController();
+  final _emailController = TextEditingController();
 
   Map<String, dynamic> _profileData = {
     'email': '',
@@ -85,42 +89,55 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         onPressed: () {
                           showDialog(
                             context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: Text('Username'),
-                              content: TextFormField(
-                                decoration:
-                                    InputDecoration(hintText: 'Firstname'),
-                                autovalidate: true,
-                                onChanged: (value) {
-                                  _profileData['displayName'] = value.trim();
-                                },
-                              ),
-                              actions: <Widget>[
-                                FlatButton(
-                                  child: Text('Cancel'),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                                FlatButton(
-                                  onPressed: () async {
-                                    try {
-                                      await Firestore.instance
-                                          .collection('users')
-                                          .document(auth.userId)
-                                          .updateData(
-                                        {
-                                          'displayName':
-                                              _profileData['displayName'],
-                                        },
-                                      );
-                                      Navigator.pop(context);
-                                    } catch (e) {
-                                      print(e);
-                                      _showErrorDialog(e);
+                            builder: (ctx) => Form(
+                              key: _usernameFormKey,
+                              child: AlertDialog(
+                                title: Text('Username'),
+                                content: TextFormField(
+                                  controller: _displayNameController,
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'Username can\'t be blank';
                                     }
+                                    return null;
                                   },
-                                  child: Text('Save'),
+                                  decoration:
+                                      InputDecoration(hintText: 'Username'),
+                                  onChanged: (value) {
+                                    _profileData['displayName'] = value.trim();
+                                  },
                                 ),
-                              ],
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text('Cancel'),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                  FlatButton(
+                                    onPressed: () async {
+                                      if (!_usernameFormKey.currentState
+                                          .validate()) {
+                                        return;
+                                      }
+                                      try {
+                                        await Firestore.instance
+                                            .collection('users')
+                                            .document(auth.userId)
+                                            .updateData(
+                                          {
+                                            'displayName':
+                                                _profileData['displayName'],
+                                          },
+                                        );
+                                        Navigator.pop(context);
+                                      } catch (e) {
+                                        print(e);
+                                        _showErrorDialog(e);
+                                      }
+                                    },
+                                    child: Text('Save'),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -151,7 +168,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           showDialog(
                             context: context,
                             builder: (ctx) => Form(
-                              key: _formKey,
+                              key: _addressFormKey,
                               child: AlertDialog(
                                 title: Text('Address'),
                                 content: Container(
@@ -168,7 +185,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       },
                                       decoration: InputDecoration(
                                           hintText: 'Street address'),
-                                      autovalidate: true,
                                       onChanged: (value) {
                                         _profileData['street'] = value.trim();
                                       },
@@ -183,7 +199,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       },
                                       decoration:
                                           InputDecoration(hintText: 'City'),
-                                      autovalidate: true,
                                       onChanged: (value) {
                                         _profileData['city'] = value.trim();
                                       },
@@ -198,7 +213,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       },
                                       decoration:
                                           InputDecoration(hintText: 'Postcode'),
-                                      autovalidate: true,
                                       onChanged: (value) {
                                         _profileData['postcode'] = value.trim();
                                       },
@@ -212,7 +226,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   ),
                                   FlatButton(
                                     onPressed: () async {
-                                      if (!_formKey.currentState.validate()) {
+                                      if (!_addressFormKey.currentState
+                                          .validate()) {
                                         return;
                                       }
 
@@ -269,40 +284,53 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         onPressed: () {
                           showDialog(
                             context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: Text('Email'),
-                              content: TextFormField(
-                                decoration: InputDecoration(
-                                    hintText: 'username@url.com'),
-                                autovalidate: true,
-                                onChanged: (value) {
-                                  _profileData['email'] = value.trim();
-                                },
-                              ),
-                              actions: <Widget>[
-                                FlatButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text('Cancel'),
-                                ),
-                                FlatButton(
-                                  onPressed: () async {
-                                    try {
-                                      await Firestore.instance
-                                          .collection('users')
-                                          .document(auth.userId)
-                                          .updateData(
-                                        {
-                                          'email': _profileData['email'],
-                                        },
-                                      );
-                                      Navigator.pop(context);
-                                    } catch (e) {
-                                      print(e);
+                            builder: (ctx) => Form(
+                              key: _emailFormKey,
+                              child: AlertDialog(
+                                title: Text('Email'),
+                                content: TextFormField(
+                                  controller: _emailController,
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'Email can\'t be blank';
                                     }
+                                    return null;
                                   },
-                                  child: Text('Save'),
+                                  decoration: InputDecoration(
+                                      hintText: 'username@url.com'),
+                                  onChanged: (value) {
+                                    _profileData['email'] = value.trim();
+                                  },
                                 ),
-                              ],
+                                actions: <Widget>[
+                                  FlatButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text('Cancel'),
+                                  ),
+                                  FlatButton(
+                                    onPressed: () async {
+                                      if (!_emailFormKey.currentState
+                                          .validate()) {
+                                        return;
+                                      }
+                                      try {
+                                        await Firestore.instance
+                                            .collection('users')
+                                            .document(auth.userId)
+                                            .updateData(
+                                          {
+                                            'email': _profileData['email'],
+                                          },
+                                        );
+                                        Navigator.pop(context);
+                                      } catch (e) {
+                                        print(e);
+                                      }
+                                    },
+                                    child: Text('Save'),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         },

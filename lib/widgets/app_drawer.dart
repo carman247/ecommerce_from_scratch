@@ -26,10 +26,6 @@ class AppDrawer extends StatelessWidget {
     return Drawer(
       child: Column(
         children: <Widget>[
-          AppBar(
-            automaticallyImplyLeading: false,
-            title: Text('Shop Name'),
-          ),
           UserAccountsDrawerHeader(
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColorDark,

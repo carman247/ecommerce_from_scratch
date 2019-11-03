@@ -227,12 +227,18 @@ class _AuthCardState extends State<AuthCard> {
                       disabledColor: Colors.grey[300],
                       child: Text(
                           _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
-                      onPressed: (_passwordController.text.isEmpty ||
-                              _emailController.text.isEmpty ||
-                              _authenticated ||
-                              _confirmPasswordController.text.isEmpty)
-                          ? null
-                          : _submit,
+                      onPressed: _authMode != AuthMode.Login
+                          ? (_passwordController.text.isEmpty ||
+                                  _emailController.text.isEmpty ||
+                                  _authenticated ||
+                                  _confirmPasswordController.text.isEmpty)
+                              ? null
+                              : _submit
+                          : (_passwordController.text.isEmpty ||
+                                  _emailController.text.isEmpty ||
+                                  _authenticated)
+                              ? null
+                              : _submit,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),

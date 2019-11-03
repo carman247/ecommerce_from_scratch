@@ -82,7 +82,10 @@ class CartItem extends StatelessWidget {
                     icon: Icon(Icons.remove),
                     onPressed: () => cart.removeSingleItem(productId),
                   ),
-                  Text('$quantity'),
+                  Text(
+                    '$quantity',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).primaryColor),
+                  ),
                   IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () => cart.addSingleItem(productId),

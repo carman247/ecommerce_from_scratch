@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_from_scratch/providers/auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,9 +19,12 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Provider.of<Cart> is the receiver of the cart provider.
+  
     final auth = Provider.of<Auth>(context);
     final cart = Provider.of<Cart>(context);
+
+    cart.getCartTotal(auth.userId);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Your Cart'),
@@ -125,9 +129,6 @@ class OrderButton extends StatefulWidget {
 
 class _OrderButtonState extends State<OrderButton> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  final _streetController = TextEditingController();
-  final _cityController = TextEditingController();
-  final _postcodeController = TextEditingController();
 
   var _isLoading = false;
 
